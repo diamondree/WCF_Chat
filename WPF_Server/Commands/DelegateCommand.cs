@@ -22,7 +22,7 @@ namespace WPF_Server.Commands
 
         public bool CanExecute(object parameter)
         {
-            return this._canExecute == null || this.CanExecute(parameter);
+            return this._canExecute == null || this._canExecute(parameter);
         }
 
         public void Execute(object parameter)

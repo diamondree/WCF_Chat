@@ -42,7 +42,7 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Content="Start" Command="{Binding StartServer}"></Button>
-            <Button Grid.Column="1" Content="Stop"></Button>
+            <Button Grid.Column="1" Content="Stop" Command="{Binding StopServer}"></Button>
         </Grid>
         <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Messages, Converter={StaticResource CollectionCoverter}}"></TextBlock>
         <Grid Grid.Column="1" Grid.Row="1">
