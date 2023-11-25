@@ -1,13 +1,10 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ServiceModel;
-using System.ServiceModel.Description;
 
 namespace WCF_Shared_Library
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ChatService : IChatService
     {
         private KeyValuePair<string, IChatServiceCallback> _user;
