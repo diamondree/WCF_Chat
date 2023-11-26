@@ -32,7 +32,7 @@
                 <RowDefinition Height="65*" />
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Content="Enter port"></Label>
-            <TextBox Grid.Row="1" Margin="10" Text="{Binding Port}"></TextBox>
+            <TextBox Grid.Row="1" Margin="10" Text="{Binding Port}" IsEnabled="{Binding IsServerStopped}"></TextBox>
             <Label Grid.Row="2" Content="Connected users"></Label>
             <TextBlock Grid.Row="3" Text="user1"></TextBlock>
         </Grid>

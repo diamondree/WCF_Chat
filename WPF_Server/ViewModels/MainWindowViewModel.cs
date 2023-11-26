@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Windows.Input;
@@ -12,34 +13,63 @@ namespace WPF_Server.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public bool IsServerRunned;
+
         private readonly ChatService _service = new ChatService();
         private ServiceHost _host;
 
-        public ObservableCollection<string> Messages { get; set; }
 
         public MainWindowViewModel()
         {
-            IsServerRunned = false;
+            _service.messages.CollectionChanged += Messages_CollectionChanged;
             Messages = new ObservableCollection<string>();            
         }
 
+        private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Messages.Add(_service.messages.Last());
+        }
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private int _Port = 3030;
 
+        private bool _IsServerStopped = true;
+        public bool IsServerStopped
+        {
+            get { return _IsServerStopped; }
+            set 
+            { 
+                _IsServerStopped = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private int _Port = 3030;
         public int Port
         {
             get { return _Port; }
-            set { 
+            set 
+            { 
                 _Port = value;
                 OnPropertyChanged();
             }
         }
+
+
+        private ObservableCollection<string> _Messages;
+        public ObservableCollection<string> Messages 
+        { 
+            get => _Messages;
+            set 
+            {
+                _Messages = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public ICommand StartServer
         {
@@ -59,7 +89,7 @@ namespace WPF_Server.ViewModels
                             _host.Open();
 
                             Messages.Add("Succesfully started");
-                            IsServerRunned = true;
+                            IsServerStopped = false;
                             OnPropertyChanged("Messages");
                         }
                         catch (AddressAlreadyInUseException ex) 
@@ -72,7 +102,8 @@ namespace WPF_Server.ViewModels
                             Messages.Add("Try another port");
                             OnPropertyChanged("Messages");
                         }
-                    }, (obj) => !IsServerRunned);
+                        
+                    }, (obj) => _IsServerStopped);
             }
         }
 
@@ -84,10 +115,10 @@ namespace WPF_Server.ViewModels
                 {
                     _host.Close();
                     
-                    IsServerRunned = false;
+                    IsServerStopped = true;
                     Messages.Add("Server stopped");
                     OnPropertyChanged("Messages");
-                }, (obj) => IsServerRunned);
+                }, (obj) => !_IsServerStopped);
             }
         }
     }

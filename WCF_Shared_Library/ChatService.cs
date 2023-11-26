@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ServiceModel;
 
 namespace WCF_Shared_Library
@@ -8,7 +9,7 @@ namespace WCF_Shared_Library
     public class ChatService : IChatService
     {
         private KeyValuePair<string, IChatServiceCallback> _user;
-        List<string> messages = new List<string>();
+        public ObservableCollection<string> messages = new ObservableCollection<string>();
         
         public bool Login(string username)
         {
