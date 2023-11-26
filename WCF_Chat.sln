@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCF_Shared_Library", "WCF_S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_Server", "WPF_Server\WPF_Server.csproj", "{7BEB8B4E-99E1-4E1E-BE9A-7E49F9C15501}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_Client", "WPF_Client\WPF_Client.csproj", "{D8C3DE91-5DFE-4594-B08A-284033C82EEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7BEB8B4E-99E1-4E1E-BE9A-7E49F9C15501}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BEB8B4E-99E1-4E1E-BE9A-7E49F9C15501}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BEB8B4E-99E1-4E1E-BE9A-7E49F9C15501}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8C3DE91-5DFE-4594-B08A-284033C82EEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8C3DE91-5DFE-4594-B08A-284033C82EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8C3DE91-5DFE-4594-B08A-284033C82EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8C3DE91-5DFE-4594-B08A-284033C82EEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

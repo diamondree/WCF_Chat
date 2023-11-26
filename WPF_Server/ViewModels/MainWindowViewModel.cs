@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
-using System.ServiceModel.Description;
 using System.Windows.Input;
 using WCF_Shared_Library;
 using WPF_Server.Commands;
@@ -16,8 +13,8 @@ namespace WPF_Server.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public bool IsServerRunned;
-        ChatService service = new ChatService();
-        ServiceHost host;
+        private readonly ChatService _service = new ChatService();
+        private ServiceHost _host;
 
         public ObservableCollection<string> Messages { get; set; }
 
@@ -52,14 +49,14 @@ namespace WPF_Server.ViewModels
                     {
                         try
                         {
-                            host = new ServiceHost(service);
+                            _host = new ServiceHost(_service);
 
                             string address = $"net.tcp://localhost:{Port}/IChatService";
                             NetTcpBinding binding = new NetTcpBinding();
                             Type contract = typeof(IChatService);
 
-                            host.AddServiceEndpoint(contract, binding, address);
-                            host.Open();
+                            _host.AddServiceEndpoint(contract, binding, address);
+                            _host.Open();
 
                             Messages.Add("Succesfully started");
                             IsServerRunned = true;
@@ -85,7 +82,7 @@ namespace WPF_Server.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                    host.Close();
+                    _host.Close();
                     
                     IsServerRunned = false;
                     Messages.Add("Server stopped");
