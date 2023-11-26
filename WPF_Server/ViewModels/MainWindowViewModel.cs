@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.ServiceModel.Description;
@@ -47,21 +48,34 @@ namespace WPF_Server.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
-                {
-                    host = new ServiceHost(service);
+                    return new DelegateCommand((obj) =>
+                    {
+                        try
+                        {
+                            host = new ServiceHost(service);
 
-                    string address = $"net.tcp://localhost:{Port}/IChatService";
-                    NetTcpBinding binding = new NetTcpBinding();
-                    Type contract = typeof(IChatService);
+                            string address = $"net.tcp://localhost:{Port}/IChatService";
+                            NetTcpBinding binding = new NetTcpBinding();
+                            Type contract = typeof(IChatService);
 
-                    host.AddServiceEndpoint(contract, binding, address);
-                    host.Open();
-                    
-                    Messages.Add("Succesfully started");
-                    IsServerRunned = true;
-                    OnPropertyChanged("Messages");
-                }, (obj)=>!IsServerRunned);
+                            host.AddServiceEndpoint(contract, binding, address);
+                            host.Open();
+
+                            Messages.Add("Succesfully started");
+                            IsServerRunned = true;
+                            OnPropertyChanged("Messages");
+                        }
+                        catch (AddressAlreadyInUseException ex) 
+                        {
+                            Messages.Add("Try another port");
+                            OnPropertyChanged("Messages");
+                        }
+                        catch(CommunicationException ex)
+                        {
+                            Messages.Add("Try another port");
+                            OnPropertyChanged("Messages");
+                        }
+                    }, (obj) => !IsServerRunned);
             }
         }
 
