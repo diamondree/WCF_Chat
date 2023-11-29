@@ -20,8 +20,19 @@ namespace WPF_Client.ViewModels
         }
 
 
-        private int _Port = 3030;
+        private string _Username = "Username";
+        public string Username
+        {
+            get { return _Username; }
+            set
+            {
+                _Username = value;
+                OnPropertyChanged();
+            }
+        }
 
+
+        private int _Port = 3030;
         public int Port
         {
             get { return _Port;}
@@ -32,8 +43,8 @@ namespace WPF_Client.ViewModels
             }
         }
 
-        private string _Ip = "localhost";
 
+        private string _Ip = "localhost";
         public string Ip
         {
             get { return _Ip; }
@@ -44,8 +55,8 @@ namespace WPF_Client.ViewModels
             }
         }
 
-        private bool _IsDisconnected = true;
 
+        private bool _IsDisconnected = true;
         public bool IsDisconnected
         {
             get => _IsDisconnected;
@@ -55,6 +66,19 @@ namespace WPF_Client.ViewModels
                 OnPropertyChanged();
             }
         }
+
+
+        private string _Message = "Type your message here";
+        public string Message
+        {
+            get { return _Message; }
+            set
+            {
+                _Message = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public ICommand Connect
         {
@@ -68,10 +92,33 @@ namespace WPF_Client.ViewModels
                     InstanceContext context = new InstanceContext(new ChatServiceCallback());
                     _channelFactory = new DuplexChannelFactory<IChatService>(context, binding, address);
                     _chatService = _channelFactory.CreateChannel();
-                    _chatService.Login("User");
-                    _chatService.SendMessageToServer("hello");
+                    _chatService.Login(Username);
+                    //_chatService.SendMessageToServer(Username);
                     IsDisconnected = false;
-                },(obj)=>IsDisconnected);
+                }, (obj) => IsDisconnected);
+            }
+        }
+
+        public ICommand Disconnect
+        {
+            get
+            {
+                return new DelegateCommand((obj) =>
+                {
+                    _chatService.Logout(Username);
+                    IsDisconnected = true;
+                }, (obj) => !IsDisconnected);
+            }
+        }
+
+        public ICommand SendMsg
+        {
+            get
+            {
+                return new DelegateCommand((obj) =>
+                {
+                    _chatService.SendMessageToServer(Message);
+                }, (obj) => !IsDisconnected);
             }
         }
     }

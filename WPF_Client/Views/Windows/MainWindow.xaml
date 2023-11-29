@@ -28,15 +28,20 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             
             <Label Grid.Row="0" Content="Enter server ip address"/>
-            <TextBox Grid.Row="1" Text="{Binding Ip}"/>
+            <TextBox Grid.Row="1" Text="{Binding Ip}" IsEnabled="{Binding IsDisconnected}"/>
             
             <Label Grid.Row="2" Content="Enter server port"/>
-            <TextBox Grid.Row="3" Text="{Binding Port}"/>
-            
-            <Label Grid.Row="4" Content="Server satus connection"/>
+            <TextBox Grid.Row="3" Text="{Binding Port}" IsEnabled="{Binding IsDisconnected}"/>
+
+            <Label Grid.Row="4" Content="Enter username"/>
+            <TextBox Grid.Row="5" Text="{Binding Username}" IsEnabled="{Binding IsDisconnected}"/>
+
+            <Label Grid.Row="6" Content="Server satus connection"/>
         </Grid>
 
         
@@ -48,7 +53,7 @@
 
             <Button Grid.Column="0" Content="Connect" Command="{Binding Connect}"/>
             
-            <Button Grid.Column="1" Content="Disconnect"/>
+            <Button Grid.Column="1" Content="Disconnect" Command="{Binding Disconnect}"/>
         </Grid>
 
 
@@ -61,8 +66,8 @@
                 <ColumnDefinition Width="20*" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Text="Type messages here"/>
-            <Button Grid.Column="1" Content="Send message"/>
+            <TextBox Grid.Column="0" Text="{Binding Message}"/>
+            <Button Grid.Column="1" Content="Send message" Command="{Binding SendMsg}"/>
         </Grid>
     </Grid>
 </Window>

@@ -27,6 +27,7 @@ namespace WPF_Server.ViewModels
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Messages.Add(_service.messages.Last());
+            OnPropertyChanged(nameof(Messages));
         }
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -90,17 +91,17 @@ namespace WPF_Server.ViewModels
 
                             Messages.Add("Succesfully started");
                             IsServerStopped = false;
-                            OnPropertyChanged("Messages");
+                            OnPropertyChanged(nameof(Messages));
                         }
                         catch (AddressAlreadyInUseException ex) 
                         {
                             Messages.Add("Try another port");
-                            OnPropertyChanged("Messages");
+                            OnPropertyChanged(nameof(Messages));
                         }
                         catch(CommunicationException ex)
                         {
                             Messages.Add("Try another port");
-                            OnPropertyChanged("Messages");
+                            OnPropertyChanged(nameof(Messages));
                         }
                         
                     }, (obj) => _IsServerStopped);
@@ -117,7 +118,7 @@ namespace WPF_Server.ViewModels
                     
                     IsServerStopped = true;
                     Messages.Add("Server stopped");
-                    OnPropertyChanged("Messages");
+                    OnPropertyChanged(nameof(Messages));
                 }, (obj) => !_IsServerStopped);
             }
         }

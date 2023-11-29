@@ -17,6 +17,7 @@ namespace WCF_Shared_Library
             {
                 IChatServiceCallback callback = OperationContext.Current.GetCallbackChannel<IChatServiceCallback>();
                 _user = new KeyValuePair<string, IChatServiceCallback>(username, callback);
+                messages.Add($"{username} connected");
                 return true;
             }
             return false;
@@ -26,12 +27,13 @@ namespace WCF_Shared_Library
         {
             if (_user.Key == username)
                 _user = new KeyValuePair<string, IChatServiceCallback>();
+            messages.Add($"{username} disconnected");
         }
 
         public void SendMessageToServer(string msg)
         {
             messages.Add($"Recieved message from {_user.Key}: {msg}");
-            Console.WriteLine($"Recieved message from {_user.Key}: {msg}");
+            //Console.WriteLine($"Recieved message from {_user.Key}: {msg}");
         }
     }
 }
