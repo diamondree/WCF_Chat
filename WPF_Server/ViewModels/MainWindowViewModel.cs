@@ -92,35 +92,35 @@ namespace WPF_Server.ViewModels
         {
             get
             {
-                    return new DelegateCommand((obj) =>
+                return new DelegateCommand((obj) =>
+                {
+                    try
                     {
-                        try
-                        {
-                            _host = new ServiceHost(_service);
+                        _host = new ServiceHost(_service);
 
-                            string address = $"net.tcp://localhost:{Port}/IChatService";
-                            NetTcpBinding binding = new NetTcpBinding();
-                            Type contract = typeof(IChatService);
+                        string address = $"net.tcp://localhost:{Port}/IChatService";
+                        NetTcpBinding binding = new NetTcpBinding();
+                        Type contract = typeof(IChatService);
 
-                            _host.AddServiceEndpoint(contract, binding, address);
-                            _host.Open();
+                        _host.AddServiceEndpoint(contract, binding, address);
+                        _host.Open();
 
-                            Messages.Add(RepliesFormatService.MessageFormat("System", "Succesfully started"));
-                            IsServerStopped = false;
-                            OnPropertyChanged(nameof(Messages));
-                        }
-                        catch (AddressAlreadyInUseException) 
-                        {
-                            Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
-                            OnPropertyChanged(nameof(Messages));
-                        }
-                        catch(CommunicationException)
-                        {
-                            Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
-                            OnPropertyChanged(nameof(Messages));
-                        }
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Succesfully started"));
+                        IsServerStopped = false;
+                        OnPropertyChanged(nameof(Messages));
+                    }
+                    catch (AddressAlreadyInUseException) 
+                    {
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
+                        OnPropertyChanged(nameof(Messages));
+                    }
+                    catch(CommunicationException)
+                    {
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
+                        OnPropertyChanged(nameof(Messages));
+                    }
                         
-                    }, (obj) => _IsServerStopped);
+                }, (obj) => _IsServerStopped);
             }
         }
 

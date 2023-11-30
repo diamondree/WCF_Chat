@@ -37,20 +37,36 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             
-            <Label Grid.Row="0" Content="Enter server ip address"/>
-            <TextBox Grid.Row="1" Text="{Binding Ip}" 
+            <Label Grid.Row="0" Content="Enter server ip address" 
+                   VerticalContentAlignment="Bottom" 
+                   HorizontalContentAlignment="Center"/>
+            <TextBox Grid.Row="1" Padding="5" Margin="5,0,5,0"
+                     BorderThickness="1" BorderBrush="Black"
+                     Text="{Binding Ip}" 
                      IsEnabled="{Binding IsDisconnected}"/>
             
-            <Label Grid.Row="2" Content="Enter server port"/>
-            <TextBox Grid.Row="3" Text="{Binding Port}" 
+            <Label Grid.Row="2" Content="Enter server port"
+                   VerticalContentAlignment="Bottom"
+                   HorizontalContentAlignment="Center"/>
+            <TextBox Grid.Row="3" Padding="5" Margin="5,0,5,0"
+                     BorderThickness="1" BorderBrush="Black"
+                     Text="{Binding Port}" 
                      IsEnabled="{Binding IsDisconnected}"/>
 
-            <Label Grid.Row="4" Content="Enter username"/>
-            <TextBox Grid.Row="5" Text="{Binding Username}" 
+            <Label Grid.Row="4" Content="Enter username"
+                   VerticalContentAlignment="Bottom"
+                   HorizontalContentAlignment="Center"/>
+            <TextBox Grid.Row="5" Padding="5" Margin="5,0,5,0"
+                     BorderThickness="1" BorderBrush="Black"
+                     Text="{Binding Username}" 
                      IsEnabled="{Binding IsDisconnected}"/>
             
-            <Label Grid.Row="6" Content="Server status connection"/>
-            <Label Grid.Row="7" Content="{Binding ServerStatus}"/>
+            <Label Grid.Row="6" Content="Server status connection"
+                   VerticalContentAlignment="Bottom"
+                   HorizontalContentAlignment="Center"/>
+            <Label Grid.Row="7" Padding="5" Margin="5,0,5,5"
+                   BorderThickness="1" BorderBrush="Black"
+                   Content="{Binding ServerStatus}"/>
         </Grid>
 
         
@@ -68,9 +84,11 @@
         </Grid>
 
         <ScrollViewer Grid.Row="0" Grid.Column="1">
-            <TextBlock Margin="10,10" 
-                       Text="{Binding Messages, 
-                Converter={StaticResource MessageCollectionConverter}}"/>
+            <Border BorderThickness="1" BorderBrush="Black" Margin="10">
+                <TextBlock Margin="5" 
+                           Text="{Binding Messages, 
+                    Converter={StaticResource MessageCollectionConverter}}"/>
+            </Border>
         </ScrollViewer>
 
         <Grid Grid.Row="1" Grid.Column="1">

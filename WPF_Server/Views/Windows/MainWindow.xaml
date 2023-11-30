@@ -36,13 +36,20 @@
                 <RowDefinition Height="65*" />
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Content="Enter port"/>
-            <TextBox Grid.Row="1" Margin="10" Text="{Binding Port}" 
+            <Label Grid.Row="0" Content="Enter port"
+                   HorizontalContentAlignment="Center" 
+                   VerticalContentAlignment="Bottom"/>
+            <TextBox Grid.Row="1" Margin="10" Padding="5"
+                     BorderThickness="1" BorderBrush="Black"
+                     Text="{Binding Port}" 
                      IsEnabled="{Binding IsServerStopped}"/>
             
-            <Label Grid.Row="2" Content="Connected users"/>
-            <TextBlock Margin="10,10" Grid.Row="3" 
-                       Text="{Binding Users, 
+            <Label Grid.Row="2" Content="Connected users"
+                   HorizontalContentAlignment="Center"
+                   VerticalContentAlignment="Bottom"/>
+            <TextBlock HorizontalAlignment="Center"
+                Margin="10,10" Grid.Row="3" 
+                Text="{Binding Users, 
                 Converter={StaticResource UserCollectionConverter}}"/>
             
         </Grid>
@@ -58,9 +65,12 @@
         </Grid>
 
         <ScrollViewer Grid.Column="1" Grid.Row="0">
-            <TextBlock Margin="10,10"
+            <Border BorderThickness="1" BorderBrush="Black" Margin="10">
+            <TextBlock
+                Margin="5"
                 Text="{Binding Messages, 
                 Converter={StaticResource MessageCollectionCoverter}}"/>
+            </Border>
         </ScrollViewer>
         
         <Grid Grid.Column="1" Grid.Row="1">
