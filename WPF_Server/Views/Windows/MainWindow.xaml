@@ -20,10 +20,12 @@
             <RowDefinition Height="90*"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25*"/>
             <ColumnDefinition Width="75*"/>
         </Grid.ColumnDefinitions>
+        
         <Grid Grid.Column="0" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="10*" />
@@ -31,22 +33,30 @@
                 <RowDefinition Height="10*" />
                 <RowDefinition Height="65*" />
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Content="Enter port"></Label>
-            <TextBox Grid.Row="1" Margin="10" Text="{Binding Port}" IsEnabled="{Binding IsServerStopped}"></TextBox>
-            <Label Grid.Row="2" Content="Connected users"></Label>
-            <TextBlock Grid.Row="3" Text="user1"></TextBlock>
+
+            <Label Grid.Row="0" Content="Enter port"/>
+            <TextBox Grid.Row="1" Margin="10" Text="{Binding Port}" 
+                     IsEnabled="{Binding IsServerStopped}"/>
+            
+            <Label Grid.Row="2" Content="Connected users"/>
+            <TextBlock Grid.Row="3" Text="user1"/>
+            
         </Grid>
+        
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
+            
             <Button Grid.Column="0" Content="Start" Command="{Binding StartServer}"></Button>
             <Button Grid.Column="1" Content="Stop" Command="{Binding StopServer}"></Button>
         </Grid>
 
         <ScrollViewer Grid.Column="1" Grid.Row="0">
-            <TextBlock Text="{Binding Messages, Converter={StaticResource CollectionCoverter}}"></TextBlock>
+            <TextBlock Margin="10,10"
+                Text="{Binding Messages, 
+                Converter={StaticResource CollectionCoverter}}"/>
         </ScrollViewer>
         
         <Grid Grid.Column="1" Grid.Row="1">
@@ -54,6 +64,7 @@
                 <ColumnDefinition Width="80*"></ColumnDefinition>
                 <ColumnDefinition Width="20*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
+            
             <TextBox Grid.Column="0" Text ="{Binding Message}"></TextBox>
             <Button Grid.Column="1" Content="Send Message" Command="{Binding SendMsg}"></Button>
         </Grid>

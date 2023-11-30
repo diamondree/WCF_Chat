@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -6,6 +7,7 @@ using System.ServiceModel;
 using System.Windows.Input;
 using WCF_Shared_Library;
 using WPF_Client.Commands;
+using WPF_Client.Enums;
 
 namespace WPF_Client.ViewModels
 {
@@ -22,7 +24,7 @@ namespace WPF_Client.ViewModels
             Messages = new ObservableCollection<string>();
         }
 
-
+       
         private string _Username = "Username";
         public string Username
         {
@@ -95,6 +97,21 @@ namespace WPF_Client.ViewModels
         }
 
 
+        private ServerStatusEnum _ServerStatus = ServerStatusEnum.Disconnected;
+        public ServerStatusEnum ServerStatus
+        {
+            get
+            {
+                return _ServerStatus;
+            }
+            set
+            {
+                _ServerStatus = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public ICommand Connect
         {
             get
@@ -113,6 +130,7 @@ namespace WPF_Client.ViewModels
                         _chatService.Login(Username);
                         _chatServiceCallback.ServerMessages.CollectionChanged += ServerMessages_CollectionChanged;
                         IsDisconnected = false;
+                        ServerStatus = ServerStatusEnum.Connected;
                     }
                     catch(EndpointNotFoundException ex)
                     {
@@ -131,6 +149,7 @@ namespace WPF_Client.ViewModels
                 {
                     _chatService.Logout(Username);
                     IsDisconnected = true;
+                    ServerStatus = ServerStatusEnum.Disconnected;
                 }, (obj) => !IsDisconnected);
             }
         }
@@ -141,8 +160,19 @@ namespace WPF_Client.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                    _chatService.SendMessageToServer(Message);
-                    Message = null;
+                    try
+                    {
+                        _chatService.SendMessageToServer(Message);
+                        Message = null;
+                    }
+                    catch (CommunicationObjectFaultedException)
+                    {
+                        Messages.Add($"{DateTime.Now.ToShortTimeString()}: Service error, communication channel fauted, try reconnect");
+                        Message = null;
+                        IsDisconnected = true;
+                        ServerStatus = ServerStatusEnum.Fauted;
+                        OnPropertyChanged(nameof(Messages));
+                    }
                 }, (obj) => !IsDisconnected);
             }
         }

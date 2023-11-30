@@ -34,18 +34,23 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             
             <Label Grid.Row="0" Content="Enter server ip address"/>
-            <TextBox Grid.Row="1" Text="{Binding Ip}" IsEnabled="{Binding IsDisconnected}"/>
+            <TextBox Grid.Row="1" Text="{Binding Ip}" 
+                     IsEnabled="{Binding IsDisconnected}"/>
             
             <Label Grid.Row="2" Content="Enter server port"/>
-            <TextBox Grid.Row="3" Text="{Binding Port}" IsEnabled="{Binding IsDisconnected}"/>
+            <TextBox Grid.Row="3" Text="{Binding Port}" 
+                     IsEnabled="{Binding IsDisconnected}"/>
 
             <Label Grid.Row="4" Content="Enter username"/>
-            <TextBox Grid.Row="5" Text="{Binding Username}" IsEnabled="{Binding IsDisconnected}"/>
-
-            <Label Grid.Row="6" Content="Server satus connection"/>
+            <TextBox Grid.Row="5" Text="{Binding Username}" 
+                     IsEnabled="{Binding IsDisconnected}"/>
+            
+            <Label Grid.Row="6" Content="Server status connection"/>
+            <Label Grid.Row="7" Content="{Binding ServerStatus}"/>
         </Grid>
 
         
@@ -55,14 +60,18 @@
                 <ColumnDefinition Width="50*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="Connect" Command="{Binding Connect}"/>
+            <Button Grid.Column="0" Content="Connect" 
+                    Command="{Binding Connect}"/>
             
-            <Button Grid.Column="1" Content="Disconnect" Command="{Binding Disconnect}"/>
+            <Button Grid.Column="1" Content="Disconnect" 
+                    Command="{Binding Disconnect}"/>
         </Grid>
 
-
-        <TextBlock Grid.Row="0" Grid.Column="1" Margin="10,10" Text="{Binding Messages, Converter={StaticResource CollectionCoverter}}"/>
-
+        <ScrollViewer Grid.Row="0" Grid.Column="1">
+            <TextBlock Margin="10,10" 
+                       Text="{Binding Messages, 
+                Converter={StaticResource CollectionCoverter}}"/>
+        </ScrollViewer>
 
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.ColumnDefinitions>
