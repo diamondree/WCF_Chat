@@ -127,10 +127,20 @@ namespace WPF_Client.ViewModels
                         InstanceContext context = new InstanceContext(_chatServiceCallback);
                         _channelFactory = new DuplexChannelFactory<IChatService>(context, binding, address);
                         _chatService = _channelFactory.CreateChannel();
-                        _chatService.Login(Username);
-                        _chatServiceCallback.ServerMessages.CollectionChanged += ServerMessages_CollectionChanged;
-                        IsDisconnected = false;
-                        ServerStatus = ServerStatusEnum.Connected;
+                        if (_chatService.Login(Username))
+                        {
+                            _chatServiceCallback.ServerMessages.CollectionChanged += OnServerMessages_CollectionChanged;
+                            IsDisconnected = false;
+                            ServerStatus = ServerStatusEnum.Connected;
+                            Messages.Add("Succesfully connected");
+                            OnPropertyChanged(nameof(Messages));
+                        }
+                        else
+                        {
+                            Messages.Add("Username is busy");
+                            OnPropertyChanged(nameof(Messages));
+                        }
+                        
                     }
                     catch(EndpointNotFoundException ex)
                     {
@@ -167,7 +177,7 @@ namespace WPF_Client.ViewModels
                     }
                     catch (CommunicationObjectFaultedException)
                     {
-                        Messages.Add($"{DateTime.Now.ToShortTimeString()}: Service error, communication channel fauted, try reconnect");
+                        Messages.Add($"{DateTime.Now.ToLongTimeString()}: Server error, communication channel fauted, try reconnect");
                         Message = null;
                         IsDisconnected = true;
                         ServerStatus = ServerStatusEnum.Fauted;
@@ -178,7 +188,7 @@ namespace WPF_Client.ViewModels
         }
 
 
-        private void ServerMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OnServerMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Messages.Add(_chatServiceCallback.ServerMessages.Last());
             OnPropertyChanged(nameof(Messages));

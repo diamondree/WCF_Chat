@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Utils\Converters\MessagesCollectionConverter.cs" />
+    <Compile Include="Utils\Converters\UsersCollectionConverter.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

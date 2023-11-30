@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -21,18 +22,9 @@ namespace WPF_Server.ViewModels
         public MainWindowViewModel()
         {
             _service.messages.CollectionChanged += Messages_CollectionChanged;
+            _service.users.CollectionChanged += OnUsers_CollectionChanged;
             Messages = new ObservableCollection<string>();
-        }
-
-        private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            Messages.Add(_service.messages.Last());
-            OnPropertyChanged(nameof(Messages));
-        }
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Users = new List<string>();
         }
 
 
@@ -79,6 +71,18 @@ namespace WPF_Server.ViewModels
             set 
             {
                 _Messages = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private List<string> _Users;
+        public List<string> Users
+        {
+            get { return _Users; }
+            set
+            {
+                _Users = value;
                 OnPropertyChanged();
             }
         }
@@ -141,9 +145,41 @@ namespace WPF_Server.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                    _service.SendMessageToClient(Message);
+                    try
+                    {
+                        _service.users.FirstOrDefault().Value.SendMessageToClient(Message);
+                        Message = null;
+                    }
+                    catch (CommunicationObjectAbortedException)
+                    {
+                        Messages.Add($"{DateTime.Now.ToLongTimeString()} client is unreachable");
+                        OnPropertyChanged(nameof(Messages));
+                        _service.users.Remove(_service.users.FirstOrDefault());
+                        Message = null;
+
+                    }
+                    
                 }, (obj) => !IsServerStopped);
             }
+        }
+
+
+        private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Messages.Add(_service.messages.Last());
+            OnPropertyChanged(nameof(Messages));
+        }
+
+        private void OnUsers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Users.Clear();
+            _service.users.ToList().ForEach(x => Users.Add(x.Key));
+            OnPropertyChanged(nameof(Users));
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
