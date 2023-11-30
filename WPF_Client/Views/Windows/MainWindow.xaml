@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Client"
         xmlns:vm="clr-namespace:WPF_Client.ViewModels"
+        xmlns:colconv="clr-namespace:WPF_Client.Utils.Converter"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <colconv:MessageCollectionConverter x:Key="CollectionCoverter"/>
+    </Window.Resources>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -57,7 +61,7 @@
         </Grid>
 
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Margin="10,10" Text="Messages"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Margin="10,10" Text="{Binding Messages, Converter={StaticResource CollectionCoverter}}"/>
 
 
         <Grid Grid.Row="1" Grid.Column="1">

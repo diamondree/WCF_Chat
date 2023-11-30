@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Windows.Input;
@@ -13,10 +15,11 @@ namespace WPF_Client.ViewModels
 
         private DuplexChannelFactory<IChatService> _channelFactory;
         private IChatService _chatService;
+        private ChatServiceCallback _chatServiceCallback;
 
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public MainWindowViewModel()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Messages = new ObservableCollection<string>();
         }
 
 
@@ -80,21 +83,42 @@ namespace WPF_Client.ViewModels
         }
 
 
+        private ObservableCollection<string> _Messages;
+        public ObservableCollection<string> Messages
+        {
+            get { return _Messages; }
+            set
+            {
+                _Messages = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public ICommand Connect
         {
             get
             {
                 return new DelegateCommand((obj) =>
                 {
-                    string address = $"net.tcp://{Ip}:{Port}/IChatService";
+                    try
+                    {
+                        string address = $"net.tcp://{Ip}:{Port}/IChatService";
 
-                    NetTcpBinding binding = new NetTcpBinding();
-                    InstanceContext context = new InstanceContext(new ChatServiceCallback());
-                    _channelFactory = new DuplexChannelFactory<IChatService>(context, binding, address);
-                    _chatService = _channelFactory.CreateChannel();
-                    _chatService.Login(Username);
-                    //_chatService.SendMessageToServer(Username);
-                    IsDisconnected = false;
+                        NetTcpBinding binding = new NetTcpBinding();
+                        _chatServiceCallback = new ChatServiceCallback();
+                        InstanceContext context = new InstanceContext(_chatServiceCallback);
+                        _channelFactory = new DuplexChannelFactory<IChatService>(context, binding, address);
+                        _chatService = _channelFactory.CreateChannel();
+                        _chatService.Login(Username);
+                        _chatServiceCallback.ServerMessages.CollectionChanged += ServerMessages_CollectionChanged;
+                        IsDisconnected = false;
+                    }
+                    catch(EndpointNotFoundException ex)
+                    {
+                        Messages.Add("Server is offline");
+                        OnPropertyChanged(nameof(Messages));
+                    }
                 }, (obj) => IsDisconnected);
             }
         }
@@ -118,8 +142,21 @@ namespace WPF_Client.ViewModels
                 return new DelegateCommand((obj) =>
                 {
                     _chatService.SendMessageToServer(Message);
+                    Message = null;
                 }, (obj) => !IsDisconnected);
             }
+        }
+
+
+        private void ServerMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Messages.Add(_chatServiceCallback.ServerMessages.Last());
+            OnPropertyChanged(nameof(Messages));
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

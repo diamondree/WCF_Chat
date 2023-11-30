@@ -35,5 +35,10 @@ namespace WCF_Shared_Library
             messages.Add($"Recieved message from {_user.Key}: {msg}");
             //Console.WriteLine($"Recieved message from {_user.Key}: {msg}");
         }
+
+        public void SendMessageToClient(string msg)
+        {
+            _user.Value.SendMessageToClient(msg);
+        }
     }
 }

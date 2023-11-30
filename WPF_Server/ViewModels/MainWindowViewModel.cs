@@ -21,7 +21,7 @@ namespace WPF_Server.ViewModels
         public MainWindowViewModel()
         {
             _service.messages.CollectionChanged += Messages_CollectionChanged;
-            Messages = new ObservableCollection<string>();            
+            Messages = new ObservableCollection<string>();
         }
 
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -55,6 +55,18 @@ namespace WPF_Server.ViewModels
             set 
             { 
                 _Port = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private string _Message = "Type your message here";
+        public string Message
+        {
+            get { return _Message; }
+            set
+            {
+                _Message = value;
                 OnPropertyChanged();
             }
         }
@@ -120,6 +132,17 @@ namespace WPF_Server.ViewModels
                     Messages.Add("Server stopped");
                     OnPropertyChanged(nameof(Messages));
                 }, (obj) => !_IsServerStopped);
+            }
+        }
+
+        public ICommand SendMsg
+        {
+            get
+            {
+                return new DelegateCommand((obj) =>
+                {
+                    _service.SendMessageToClient(Message);
+                }, (obj) => !IsServerStopped);
             }
         }
     }
