@@ -105,18 +105,18 @@ namespace WPF_Server.ViewModels
                             _host.AddServiceEndpoint(contract, binding, address);
                             _host.Open();
 
-                            Messages.Add("Succesfully started");
+                            Messages.Add(RepliesFormatService.MessageFormat("System", "Succesfully started"));
                             IsServerStopped = false;
                             OnPropertyChanged(nameof(Messages));
                         }
-                        catch (AddressAlreadyInUseException ex) 
+                        catch (AddressAlreadyInUseException) 
                         {
-                            Messages.Add("Try another port");
+                            Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
                             OnPropertyChanged(nameof(Messages));
                         }
-                        catch(CommunicationException ex)
+                        catch(CommunicationException)
                         {
-                            Messages.Add("Try another port");
+                            Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
                             OnPropertyChanged(nameof(Messages));
                         }
                         
@@ -133,7 +133,7 @@ namespace WPF_Server.ViewModels
                     _host.Close();
                     
                     IsServerStopped = true;
-                    Messages.Add("Server stopped");
+                    Messages.Add(RepliesFormatService.MessageFormat("System", "Server stopped"));
                     OnPropertyChanged(nameof(Messages));
                 }, (obj) => !_IsServerStopped);
             }
@@ -148,18 +148,20 @@ namespace WPF_Server.ViewModels
                     try
                     {
                         _service.users.FirstOrDefault().Value.SendMessageToClient(Message);
-                        Message = null;
+                        Messages.Add(RepliesFormatService.MessageFormat("Server", Message));
+                        OnPropertyChanged(nameof(Messages));
                     }
                     catch (CommunicationObjectAbortedException)
                     {
-                        Messages.Add($"{DateTime.Now.ToLongTimeString()} client is unreachable");
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Client is unreachable"));
                         OnPropertyChanged(nameof(Messages));
                         _service.users.Remove(_service.users.FirstOrDefault());
-                        Message = null;
-
                     }
-                    
-                }, (obj) => !IsServerStopped);
+                    finally
+                    {
+                        Message = "";
+                    }
+                }, (obj) => ((!IsServerStopped) && (Message.Length > 0)));
             }
         }
 

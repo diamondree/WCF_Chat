@@ -132,19 +132,19 @@ namespace WPF_Client.ViewModels
                             _chatServiceCallback.ServerMessages.CollectionChanged += OnServerMessages_CollectionChanged;
                             IsDisconnected = false;
                             ServerStatus = ServerStatusEnum.Connected;
-                            Messages.Add("Succesfully connected");
+                            Messages.Add(RepliesFormatService.MessageFormat("System", "Successfully connected"));
                             OnPropertyChanged(nameof(Messages));
                         }
                         else
                         {
-                            Messages.Add("Username is busy");
+                            Messages.Add(RepliesFormatService.MessageFormat("System", "Username is busy"));
                             OnPropertyChanged(nameof(Messages));
                         }
                         
                     }
-                    catch(EndpointNotFoundException ex)
+                    catch(EndpointNotFoundException)
                     {
-                        Messages.Add("Server is offline");
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Server is offline"));
                         OnPropertyChanged(nameof(Messages));
                     }
                 }, (obj) => IsDisconnected);
@@ -157,9 +157,24 @@ namespace WPF_Client.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                    _chatService.Logout(Username);
-                    IsDisconnected = true;
-                    ServerStatus = ServerStatusEnum.Disconnected;
+                    try
+                    {
+                        _chatService.Logout(Username);
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Successfully disconnected"));
+                        OnPropertyChanged(nameof(Messages));
+
+                    }
+                    catch (CommunicationObjectFaultedException)
+                    {
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Server is offline"));
+                        OnPropertyChanged(nameof(Messages));
+                    }
+                    finally
+                    {
+                        ServerStatus = ServerStatusEnum.Disconnected;
+                        IsDisconnected = true;
+                    }
+                    
                 }, (obj) => !IsDisconnected);
             }
         }
@@ -173,17 +188,21 @@ namespace WPF_Client.ViewModels
                     try
                     {
                         _chatService.SendMessageToServer(Message);
-                        Message = null;
+                        Messages.Add(RepliesFormatService.MessageFormat(Username, Message));
+                        OnPropertyChanged(nameof(Messages));
                     }
                     catch (CommunicationObjectFaultedException)
                     {
-                        Messages.Add($"{DateTime.Now.ToLongTimeString()}: Server error, communication channel fauted, try reconnect");
-                        Message = null;
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Communication channel fauted, try reconnect"));
                         IsDisconnected = true;
                         ServerStatus = ServerStatusEnum.Fauted;
                         OnPropertyChanged(nameof(Messages));
                     }
-                }, (obj) => !IsDisconnected);
+                    finally
+                    {
+                        Message = "";
+                    }
+                }, (obj) => ((!IsDisconnected) && (Message.Length > 0)));
             }
         }
 

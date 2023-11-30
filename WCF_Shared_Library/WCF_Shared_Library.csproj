@@ -46,6 +46,7 @@
     <Compile Include="ChatServiceCallback.cs" />
     <Compile Include="IChatService.cs" />
     <Compile Include="IChatServiceCallback.cs" />
+    <Compile Include="RepliesFormatService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
