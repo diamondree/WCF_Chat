@@ -7,12 +7,14 @@
         xmlns:vm="clr-namespace:WPF_Server.ViewModels"
         xmlns:colconv="clr-namespace:Common;assembly=Common"
         xmlns:usercolconv="clr-namespace:Common.Utils.Converters;assembly=Common"
+        xmlns:ipvalcon="clr-namespace:Common.Utils.Converters;assembly=Common"
         xmlns:vr="clr-namespace:Common.Utils.ValidationRules;assembly=Common"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <colconv:MessageCollectionConverter x:Key="MessageCollectionCoverter"/>
         <usercolconv:UserCollectionConverter x:Key="UserCollectionConverter"/>
+        <ipvalcon:IpValidationConverter x:Key="IpValidationConverter"/>
     </Window.Resources>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -40,7 +42,7 @@
             <Label Grid.Row="0" Content="Enter port"
                    HorizontalContentAlignment="Center" 
                    VerticalContentAlignment="Bottom"/>
-            <TextBox Grid.Row="1" Margin="10" Padding="5"
+            <TextBox Name="port" Grid.Row="1" Margin="10" Padding="5"
                      BorderThickness="1" BorderBrush="Black"
                      IsEnabled="{Binding IsServerStopped}">
                 <TextBox.Text>
@@ -68,7 +70,13 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="Start" Command="{Binding StartServer}"/>
+            <Button Grid.Column="0" Content="Start" Command="{Binding StartServer}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource IpValidationConverter}">
+                        <Binding ElementName="port" Path="(Validation.HasError)"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
             <Button Grid.Column="1" Content="Stop" Command="{Binding StopServer}"/>
         </Grid>
 

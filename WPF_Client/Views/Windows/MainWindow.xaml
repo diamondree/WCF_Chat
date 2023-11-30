@@ -123,7 +123,7 @@
             <Label Grid.Row="2" Content="Enter server port"
                    VerticalContentAlignment="Bottom"
                    HorizontalContentAlignment="Center"/>
-            <TextBox Grid.Row="3" Padding="5" Margin="5,0,5,0"
+            <TextBox Name="port" Grid.Row="3" Padding="5" Margin="5,0,5,0"
                      BorderThickness="1" BorderBrush="Black" 
                      IsEnabled="{Binding IsDisconnected}">
                 <TextBox.Text>
@@ -159,13 +159,14 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0" Content="Connect" 
-                    Command="{Binding Connect}">
+                    Command="{Binding Connect}" Height="43" VerticalAlignment="Top">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource IpValidationConverter}">
                         <Binding ElementName="oct1" Path="(Validation.HasError)"/>
                         <Binding ElementName="oct2" Path="(Validation.HasError)"/>
                         <Binding ElementName="oct3" Path="(Validation.HasError)"/>
                         <Binding ElementName="oct4" Path="(Validation.HasError)"/>
+                        <Binding ElementName="port" Path="(Validation.HasError)"/>
                     </MultiBinding>
                 </Button.IsEnabled>
             </Button>
