@@ -59,7 +59,7 @@
                              MaxWidth="50" MaxHeight="40"
                              IsEnabled="{Binding IsDisconnected}">
                         <TextBox.Text>
-                            <Binding Path="octet1">
+                            <Binding Path="octet1" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <vr:IpOctetValidation/>
                                 </Binding.ValidationRules>
@@ -74,7 +74,7 @@
                              MaxWidth="50" MaxHeight="40"
                              IsEnabled="{Binding IsDisconnected}">
                         <TextBox.Text>
-                            <Binding Path="octet2">
+                            <Binding Path="octet2" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <vr:IpOctetValidation/>
                                 </Binding.ValidationRules>
@@ -89,7 +89,7 @@
                              MaxWidth="50" MaxHeight="40"
                              IsEnabled="{Binding IsDisconnected}">
                         <TextBox.Text>
-                            <Binding Path="octet3">
+                            <Binding Path="octet3" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <vr:IpOctetValidation/>
                                 </Binding.ValidationRules>
@@ -104,7 +104,7 @@
                              MaxWidth="50" MaxHeight="40"
                              IsEnabled="{Binding IsDisconnected}">
                         <TextBox.Text>
-                            <Binding Path="octet4">
+                            <Binding Path="octet4" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <vr:IpOctetValidation/>
                                 </Binding.ValidationRules>
@@ -118,9 +118,16 @@
                    VerticalContentAlignment="Bottom"
                    HorizontalContentAlignment="Center"/>
             <TextBox Grid.Row="3" Padding="5" Margin="5,0,5,0"
-                     BorderThickness="1" BorderBrush="Black"
-                     Text="{Binding Port}" 
-                     IsEnabled="{Binding IsDisconnected}"/>
+                     BorderThickness="1" BorderBrush="Black" 
+                     IsEnabled="{Binding IsDisconnected}">
+                <TextBox.Text>
+                    <Binding Path="Port" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <vr:PortValidation/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
             <Label Grid.Row="4" Content="Enter username"
                    VerticalContentAlignment="Bottom"
@@ -166,7 +173,7 @@
                 <ColumnDefinition Width="20*" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Text="{Binding Message}"/>
+            <TextBox Grid.Column="0" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Grid.Column="1" Content="Send message" Command="{Binding SendMsg}"/>
         </Grid>
     </Grid>
