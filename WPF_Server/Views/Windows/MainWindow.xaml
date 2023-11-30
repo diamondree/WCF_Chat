@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Server"
         xmlns:vm="clr-namespace:WPF_Server.ViewModels"
-        xmlns:msgcolconv="clr-namespace:WPF_Server.Utils.Converter" 
-        xmlns:usrcolconv="clr-namespace:WPF_Server.Utils.Converters"
+        xmlns:colconv="clr-namespace:Common;assembly=Common"
+        xmlns:usercolconv="clr-namespace:Common.Utils.Converters;assembly=Common"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
-        <msgcolconv:MessagesCollectionConverter x:Key="MessagesCollectionCoverter"/>
-        <usrcolconv:UsersCollectionConverter x:Key="UsersCollectionConverter"/>
+        <colconv:MessageCollectionConverter x:Key="MessageCollectionCoverter"/>
+        <usercolconv:UserCollectionConverter x:Key="UserCollectionConverter"/>
     </Window.Resources>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -43,7 +43,7 @@
             <Label Grid.Row="2" Content="Connected users"/>
             <TextBlock Margin="10,10" Grid.Row="3" 
                        Text="{Binding Users, 
-                Converter={StaticResource UsersCollectionConverter}}"/>
+                Converter={StaticResource UserCollectionConverter}}"/>
             
         </Grid>
         
@@ -60,7 +60,7 @@
         <ScrollViewer Grid.Column="1" Grid.Row="0">
             <TextBlock Margin="10,10"
                 Text="{Binding Messages, 
-                Converter={StaticResource MessagesCollectionCoverter}}"/>
+                Converter={StaticResource MessageCollectionCoverter}}"/>
         </ScrollViewer>
         
         <Grid Grid.Column="1" Grid.Row="1">

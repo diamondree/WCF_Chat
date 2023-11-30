@@ -66,7 +66,6 @@
     </Compile>
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Enums\ServerStatusEnum.cs" />
-    <Compile Include="Utils\Converters\MessageCollectionConverter.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -103,6 +102,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{ae7a07a6-c6db-4f09-b2fa-6e01f650a546}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WCF_Shared_Library\WCF_Shared_Library.csproj">
       <Project>{36bb7ee6-80a4-46ae-bec3-a082870e6b0c}</Project>
       <Name>WCF_Shared_Library</Name>

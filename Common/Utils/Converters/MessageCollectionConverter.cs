@@ -1,21 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 
-namespace WPF_Server.Utils.Converters
+namespace Common
 {
-    public class UsersCollectionConverter : IValueConverter
+    public class MessageCollectionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            List<string> users = (List<string>)value;
+            ObservableCollection<string> messages = (ObservableCollection<string>)value;
+
             var sb = new StringBuilder();
-            foreach (var user in users)
+
+            foreach (var message in messages)
             {
-                sb.AppendLine(user);
+                sb.AppendLine(message);
             }
+
             return sb.ToString();
         }
 
