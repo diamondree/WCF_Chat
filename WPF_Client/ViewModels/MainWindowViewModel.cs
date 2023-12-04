@@ -18,7 +18,6 @@ namespace WPF_Client.ViewModels
         private DuplexChannelFactory<IChatService> _channelFactory;
         private IChatService _chatService;
         private ChatServiceCallback _chatServiceCallback;
-        private string _Ip;
 
         public MainWindowViewModel()
         {
@@ -50,46 +49,13 @@ namespace WPF_Client.ViewModels
         }
 
 
-        private int _octet1 = 192;
-        public int octet1
+        private string _Ip = "192.168.0.191";
+        public string Ip
         {
-            get { return _octet1; }
+            get { return _Ip; }
             set
             {
-                _octet1 = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _octet2 = 168;
-        public int octet2
-        {
-            get { return _octet2; }
-            set
-            {
-                _octet2 = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _octet3 = 0;
-        public int octet3
-        {
-            get { return _octet3; }
-            set
-            {
-                _octet3 = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _octet4 = 191;
-        public int octet4
-        {
-            get { return _octet4; }
-            set
-            {
-                _octet4 = value;
+                _Ip = value;
                 OnPropertyChanged();
             }
         }
@@ -154,8 +120,7 @@ namespace WPF_Client.ViewModels
                 {
                     try
                     {
-                        _Ip = $"{octet1}.{octet2}.{octet3}.{octet4}";
-                        string address = $"net.tcp://{_Ip}:{Port}/IChatService";
+                        string address = $"net.tcp://{Ip}:{Port}/IChatService";
 
                         NetTcpBinding binding = new NetTcpBinding();
                         _chatServiceCallback = new ChatServiceCallback();
