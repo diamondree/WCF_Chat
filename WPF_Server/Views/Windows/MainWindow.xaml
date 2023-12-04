@@ -44,7 +44,8 @@
                    VerticalContentAlignment="Bottom"/>
             <TextBox Name="port" Grid.Row="1" Margin="10" Padding="5"
                      BorderThickness="1" BorderBrush="Black"
-                     IsEnabled="{Binding IsServerStopped}">
+                     IsEnabled="{Binding IsServerStopped}"
+                     PreviewTextInput="port_PreviewTextInput">
                 <TextBox.Text>
                     <Binding Path="Port" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>

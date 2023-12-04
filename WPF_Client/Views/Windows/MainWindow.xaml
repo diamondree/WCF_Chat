@@ -46,7 +46,8 @@
             <TextBox Name="ip" Grid.Row="1"
                      Margin="5,0,5,0" Padding="5"
                      BorderThickness="1" BorderBrush="Black"
-                     IsEnabled="{Binding IsDisconnected}">
+                     IsEnabled="{Binding IsDisconnected}"
+                     PreviewTextInput="ip_PreviewTextInput">
                 <TextBox.Text>
                     <Binding Path="Ip" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
@@ -61,7 +62,8 @@
                 HorizontalContentAlignment="Center"/>
             <TextBox Name="port" Grid.Row="3" Padding="5" Margin="5,0,5,0"
                      BorderThickness="1" BorderBrush="Black" 
-                     IsEnabled="{Binding IsDisconnected}">
+                     IsEnabled="{Binding IsDisconnected}"
+                     PreviewTextInput="port_PreviewTextInput">
                 <TextBox.Text>
                     <Binding Path="Port" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>

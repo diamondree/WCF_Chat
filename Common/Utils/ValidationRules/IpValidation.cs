@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace Common.Utils.ValidationRules
@@ -13,7 +14,7 @@ namespace Common.Utils.ValidationRules
             {
                 int octet;
                 int.TryParse(oct, out octet);
-                if (octet < 0 || octet > 255 || oct.Length > 3)
+                if (octet < 0 || octet > 255 || oct.Length == 0 || oct.Length > 3 || octets.Count() != 4)
                     return new ValidationResult(false, "Octet must be between 0-255");
             }
             
