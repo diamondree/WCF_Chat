@@ -58,11 +58,18 @@
             <Label Grid.Row="2" Content="Connected users"
                    HorizontalContentAlignment="Center"
                    VerticalContentAlignment="Bottom"/>
-            <TextBlock HorizontalAlignment="Center"
-                Margin="10,10" Grid.Row="3" 
-                Text="{Binding Users, 
-                Converter={StaticResource UserCollectionConverter}}"/>
-            
+            <ListBox HorizontalAlignment="Center"
+                     Margin="10,10" Grid.Row="3"
+                     MinWidth="150"
+                     ItemsSource="{Binding Users}"
+                     SelectedItem="{Binding SelectedUser}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Username}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
         </Grid>
         
         <Grid Grid.Column="0" Grid.Row="1">

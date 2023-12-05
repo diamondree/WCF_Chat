@@ -7,8 +7,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using WCF_Shared_Library;
+using WPF_Server.Models;
 
 namespace WPF_Server.ViewModels
 {
@@ -18,6 +20,7 @@ namespace WPF_Server.ViewModels
 
         private readonly ChatService _service = new ChatService();
         private ServiceHost _host;
+        private static object _lock = new object();
 
 
         public MainWindowViewModel()
@@ -25,7 +28,8 @@ namespace WPF_Server.ViewModels
             _service.messages.CollectionChanged += Messages_CollectionChanged;
             _service.users.CollectionChanged += OnUsers_CollectionChanged;
             Messages = new ObservableCollection<string>();
-            Users = new List<string>();
+            Users = new ObservableCollection<User> ();
+            BindingOperations.EnableCollectionSynchronization(Users, _lock);
         }
 
 
@@ -77,13 +81,24 @@ namespace WPF_Server.ViewModels
         }
 
 
-        private List<string> _Users;
-        public List<string> Users
+        private ObservableCollection<User> _Users;
+        public ObservableCollection<User> Users
         {
             get { return _Users; }
             set
             {
                 _Users = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private User _SelectedUser;
+        public User SelectedUser
+        {
+            get { return _SelectedUser; }
+            set
+            {
+                _SelectedUser = value;
                 OnPropertyChanged();
             }
         }
@@ -113,7 +128,7 @@ namespace WPF_Server.ViewModels
                 {
                     try
                     {
-                        _service.users.FirstOrDefault().Value.SendMessageToClient(Message);
+                        _service.users.FirstOrDefault( x => x.Key == SelectedUser.Username).Value.SendMessageToClient(Message);
                         Messages.Add(RepliesFormatService.MessageFormat("Server", Message));
                         OnPropertyChanged(nameof(Messages));
                     }
@@ -121,13 +136,13 @@ namespace WPF_Server.ViewModels
                     {
                         Messages.Add(RepliesFormatService.MessageFormat("System", "Client is unreachable"));
                         OnPropertyChanged(nameof(Messages));
-                        _service.users.Remove(_service.users.FirstOrDefault());
+                        _service.users.Remove(_service.users.FirstOrDefault(x => x.Key == SelectedUser.Username));
                     }
                     finally
                     {
                         Message = "";
                     }
-                }, (obj) => (!IsServerStopped && Message.Length > 0 && _service.users.Count() > 0));
+                }, (obj) => (!IsServerStopped && Message.Length > 0 && _service.users.Count() > 0 && SelectedUser != null));
             }
         }
 
@@ -206,7 +221,7 @@ namespace WPF_Server.ViewModels
         private void OnUsers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Users.Clear();
-            _service.users.ToList().ForEach(x => Users.Add(x.Key));
+            _service.users.ToList().ForEach(x => Users.Add(new User { Username = x.Key }));
             OnPropertyChanged(nameof(Users));
         }
 
