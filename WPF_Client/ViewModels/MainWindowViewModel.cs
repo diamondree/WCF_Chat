@@ -130,6 +130,7 @@ namespace WPF_Client.ViewModels
                         if (_chatService.Login(Username))
                         {
                             _chatServiceCallback.ServerMessages.CollectionChanged += OnServerMessages_CollectionChanged;
+                            _chatServiceCallback.NotifyMessages.CollectionChanged += OnNotifyMessages_CollectionChanged; 
                             IsDisconnected = false;
                             ServerStatus = ServerStatusEnum.Connected;
                             Messages.Add(RepliesFormatService.MessageFormat("System", "Successfully connected"));
@@ -201,6 +202,14 @@ namespace WPF_Client.ViewModels
         {
             Messages.Add(_chatServiceCallback.ServerMessages.Last());
             OnPropertyChanged(nameof(Messages));
+        }
+
+        private void OnNotifyMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Messages.Add(_chatServiceCallback.NotifyMessages.Last());
+            OnPropertyChanged(nameof(Messages));
+            ServerStatus = ServerStatusEnum.Fauted;
+            IsDisconnected = true;
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)

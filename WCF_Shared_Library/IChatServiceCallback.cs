@@ -6,5 +6,8 @@ namespace WCF_Shared_Library
     {
         [OperationContract]
         void SendMessageToClient(string msg);
+
+        [OperationContract]
+        void NotifyOnServerClosing();
     }
 }

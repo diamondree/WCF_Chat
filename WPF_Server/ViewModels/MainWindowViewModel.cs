@@ -165,6 +165,13 @@ namespace WPF_Server.ViewModels
             }
         }
 
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            if (_service.users.Count() > 0)
+                foreach (var user in _service.users)
+                    user.Value.NotifyOnServerClosing();
+        }
+
 
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
