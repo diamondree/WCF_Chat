@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using WCF_Shared_Library;
 using WPF_Server.Commands;
@@ -92,35 +93,7 @@ namespace WPF_Server.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
-                {
-                    try
-                    {
-                        _host = new ServiceHost(_service);
-
-                        string address = $"net.tcp://localhost:{Port}/IChatService";
-                        NetTcpBinding binding = new NetTcpBinding();
-                        Type contract = typeof(IChatService);
-
-                        _host.AddServiceEndpoint(contract, binding, address);
-                        _host.Open();
-
-                        Messages.Add(RepliesFormatService.MessageFormat("System", "Succesfully started"));
-                        IsServerStopped = false;
-                        OnPropertyChanged(nameof(Messages));
-                    }
-                    catch (AddressAlreadyInUseException) 
-                    {
-                        Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
-                        OnPropertyChanged(nameof(Messages));
-                    }
-                    catch(CommunicationException)
-                    {
-                        Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
-                        OnPropertyChanged(nameof(Messages));
-                    }
-                        
-                }, (obj) => _IsServerStopped);
+                return new AsyncDelegateCommand(RunServer, (obj) => IsServerStopped);
             }
         }
 
@@ -128,17 +101,7 @@ namespace WPF_Server.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
-                {
-                    OnServerClosing();
-                    Users = new List<string>();
-                    _service.users = new ObservableCollection<KeyValuePair<string, IChatServiceCallback>>();
-                    _host.Close();
-                    
-                    IsServerStopped = true;
-                    Messages.Add(RepliesFormatService.MessageFormat("System", "Server stopped"));
-                    OnPropertyChanged(nameof(Messages));
-                }, (obj) => !_IsServerStopped);
+                return new AsyncDelegateCommand(ServerStop, (obj) => !_IsServerStopped);
             }
         }
 
@@ -178,6 +141,58 @@ namespace WPF_Server.ViewModels
             if (_service.users.Count() > 0)
                 foreach (var user in _service.users)
                     user.Value.NotifyOnServerClosing();
+        }
+
+        private async Task RunServer()
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    Messages.Add(RepliesFormatService.MessageFormat("System", "Server trying to start, please wait..."));
+                    OnPropertyChanged(nameof(Messages));
+                    _host = new ServiceHost(_service);
+
+                    string address = $"net.tcp://localhost:{Port}/IChatService";
+                    NetTcpBinding binding = new NetTcpBinding();
+                    Type contract = typeof(IChatService);
+
+                    _host.AddServiceEndpoint(contract, binding, address);
+                    _host.Open();
+
+                    Messages.Add(RepliesFormatService.MessageFormat("System", "Succesfully started"));
+                    IsServerStopped = false;
+                    OnPropertyChanged(nameof(IsServerStopped));
+                    OnPropertyChanged(nameof(Messages));
+                }
+                catch (AddressAlreadyInUseException)
+                {
+                    Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
+                    OnPropertyChanged(nameof(Messages));
+                }
+                catch (CommunicationException)
+                {
+                    Messages.Add(RepliesFormatService.MessageFormat("System", "Try another port"));
+                    OnPropertyChanged(nameof(Messages));
+                }
+            });
+        }
+
+        private async Task ServerStop()
+        {
+            await Task.Run(() =>
+            {
+                Messages.Add(RepliesFormatService.MessageFormat("System", "Server stopping, please wait..."));
+                OnPropertyChanged(nameof(Messages));
+                OnServerClosing();
+                Users = new List<string>();
+                _service.users = new ObservableCollection<KeyValuePair<string, IChatServiceCallback>>();
+                _host.Close();
+
+                IsServerStopped = true;
+                Messages.Add(RepliesFormatService.MessageFormat("System", "Server stopped"));
+                OnPropertyChanged(nameof(Messages));
+            });
         }
 
 
