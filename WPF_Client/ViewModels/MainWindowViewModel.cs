@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using WCF_Shared_Library;
 using WPF_Client.Enums;
@@ -115,39 +116,7 @@ namespace WPF_Client.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
-                {
-                    try
-                    {
-                        string address = $"net.tcp://{Ip}:{Port}/IChatService";
-
-                        NetTcpBinding binding = new NetTcpBinding();
-                        _chatServiceCallback = new ChatServiceCallback();
-                        InstanceContext context = new InstanceContext(_chatServiceCallback);
-                        _channelFactory = new DuplexChannelFactory<IChatService>(context, binding, address);
-                        _chatService = _channelFactory.CreateChannel();
-                        if (_chatService.Login(Username))
-                        {
-                            _chatServiceCallback.ServerMessages.CollectionChanged += OnServerMessages_CollectionChanged;
-                            _chatServiceCallback.NotifyMessages.CollectionChanged += OnNotifyMessages_CollectionChanged; 
-                            IsDisconnected = false;
-                            ServerStatus = ServerStatusEnum.Connected;
-                            Messages.Add(RepliesFormatService.MessageFormat("System", "Successfully connected"));
-                            OnPropertyChanged(nameof(Messages));
-                        }
-                        else
-                        {
-                            Messages.Add(RepliesFormatService.MessageFormat("System", "Username is busy"));
-                            OnPropertyChanged(nameof(Messages));
-                        }
-                        
-                    }
-                    catch(EndpointNotFoundException)
-                    {
-                        Messages.Add(RepliesFormatService.MessageFormat("System", "Server is offline"));
-                        OnPropertyChanged(nameof(Messages));
-                    }
-                }, (obj) => IsDisconnected);
+                return new AsyncDelegateCommand(ConnectToServer, (obj) => IsDisconnected);
             }
         }
 
@@ -196,6 +165,45 @@ namespace WPF_Client.ViewModels
                 DisconnectFromServer();
         }
 
+
+        private async Task ConnectToServer()
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    Messages.Add(RepliesFormatService.MessageFormat("System", "Connecting to server, please wait..."));
+                    OnPropertyChanged(nameof(Messages));
+                    string address = $"net.tcp://{Ip}:{Port}/IChatService";
+
+                    NetTcpBinding binding = new NetTcpBinding();
+                    _chatServiceCallback = new ChatServiceCallback();
+                    InstanceContext context = new InstanceContext(_chatServiceCallback);
+                    _channelFactory = new DuplexChannelFactory<IChatService>(context, binding, address);
+                    _chatService = _channelFactory.CreateChannel();
+                    if (_chatService.Login(Username))
+                    {
+                        _chatServiceCallback.ServerMessages.CollectionChanged += OnServerMessages_CollectionChanged;
+                        _chatServiceCallback.NotifyMessages.CollectionChanged += OnNotifyMessages_CollectionChanged;
+                        IsDisconnected = false;
+                        ServerStatus = ServerStatusEnum.Connected;
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Successfully connected"));
+                        OnPropertyChanged(nameof(Messages));
+                    }
+                    else
+                    {
+                        Messages.Add(RepliesFormatService.MessageFormat("System", "Username is busy"));
+                        OnPropertyChanged(nameof(Messages));
+                    }
+
+                }
+                catch (EndpointNotFoundException)
+                {
+                    Messages.Add(RepliesFormatService.MessageFormat("System", "Server is offline"));
+                    OnPropertyChanged(nameof(Messages));
+                }
+            });
+        }
 
         private void OnServerMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
