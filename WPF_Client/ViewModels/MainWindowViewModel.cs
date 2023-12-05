@@ -24,7 +24,7 @@ namespace WPF_Client.ViewModels
             Messages = new ObservableCollection<string>();
         }
 
-       
+
         private string _Username = "Username";
         public string Username
         {
@@ -157,24 +157,7 @@ namespace WPF_Client.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
-                    try
-                    {
-                        _chatService.Logout(Username);
-                        Messages.Add(RepliesFormatService.MessageFormat("System", "Successfully disconnected"));
-                        OnPropertyChanged(nameof(Messages));
-
-                    }
-                    catch (CommunicationObjectFaultedException)
-                    {
-                        Messages.Add(RepliesFormatService.MessageFormat("System", "Server is offline"));
-                        OnPropertyChanged(nameof(Messages));
-                    }
-                    finally
-                    {
-                        ServerStatus = ServerStatusEnum.Disconnected;
-                        IsDisconnected = true;
-                    }
-                    
+                    DisconnectFromServer();
                 }, (obj) => !IsDisconnected);
             }
         }
@@ -207,6 +190,13 @@ namespace WPF_Client.ViewModels
         }
 
 
+        public void OnWidnowClosing(object sender, CancelEventArgs e)
+        {
+            if (!IsDisconnected)
+                DisconnectFromServer();
+        }
+
+
         private void OnServerMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Messages.Add(_chatServiceCallback.ServerMessages.Last());
@@ -216,6 +206,28 @@ namespace WPF_Client.ViewModels
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void DisconnectFromServer()
+        {
+            try
+            {
+                _chatService.Logout(Username);
+                _channelFactory.Close();
+                Messages.Add(RepliesFormatService.MessageFormat("System", "Successfully disconnected"));
+                OnPropertyChanged(nameof(Messages));
+
+            }
+            catch (CommunicationObjectFaultedException)
+            {
+                Messages.Add(RepliesFormatService.MessageFormat("System", "Server is offline"));
+                OnPropertyChanged(nameof(Messages));
+            }
+            finally
+            {
+                ServerStatus = ServerStatusEnum.Disconnected;
+                IsDisconnected = true;
+            }
         }
     }
 }
