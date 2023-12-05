@@ -127,7 +127,7 @@ namespace WPF_Server.ViewModels
                     {
                         Message = "";
                     }
-                }, (obj) => ((!IsServerStopped) && (Message.Length > 0)));
+                }, (obj) => (!IsServerStopped && Message.Length > 0 && _service.users.Count() > 0));
             }
         }
 
@@ -187,7 +187,7 @@ namespace WPF_Server.ViewModels
                 OnServerClosing();
                 Users.Clear();
                 OnPropertyChanged(nameof(Users));
-                _service.users = new ObservableCollection<KeyValuePair<string, IChatServiceCallback>>();
+                _service.users.Clear();
                 _host.Close();
 
                 IsServerStopped = true;
