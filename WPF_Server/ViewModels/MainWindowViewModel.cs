@@ -130,6 +130,9 @@ namespace WPF_Server.ViewModels
             {
                 return new DelegateCommand((obj) =>
                 {
+                    OnServerClosing();
+                    Users = new List<string>();
+                    _service.users = new ObservableCollection<KeyValuePair<string, IChatServiceCallback>>();
                     _host.Close();
                     
                     IsServerStopped = true;
@@ -165,7 +168,12 @@ namespace WPF_Server.ViewModels
             }
         }
 
-        public void OnWindowClosing(object sender, CancelEventArgs e)
+        public void OnServerClosing(object sender, CancelEventArgs e)
+        {
+            OnServerClosing();
+        }
+
+        private void OnServerClosing()
         {
             if (_service.users.Count() > 0)
                 foreach (var user in _service.users)

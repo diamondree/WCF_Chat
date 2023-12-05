@@ -15,7 +15,7 @@ namespace WPF_Server
         {
             InitializeComponent();
             _viewModel = DataContext as MainWindowViewModel;
-            Closing += _viewModel.OnWindowClosing;
+            Closing += _viewModel.OnServerClosing;
         }
 
         private void port_PreviewTextInput(object sender, TextCompositionEventArgs e)
