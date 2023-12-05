@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.CommandsBase;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +9,6 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WCF_Shared_Library;
-using WPF_Server.Commands;
 
 namespace WPF_Server.ViewModels
 {
@@ -185,7 +185,8 @@ namespace WPF_Server.ViewModels
                 Messages.Add(RepliesFormatService.MessageFormat("System", "Server stopping, please wait..."));
                 OnPropertyChanged(nameof(Messages));
                 OnServerClosing();
-                Users = new List<string>();
+                Users.Clear();
+                OnPropertyChanged(nameof(Users));
                 _service.users = new ObservableCollection<KeyValuePair<string, IChatServiceCallback>>();
                 _host.Close();
 

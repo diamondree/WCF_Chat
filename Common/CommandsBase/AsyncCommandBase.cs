@@ -2,14 +2,14 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WPF_Server.Commands
+namespace Common.CommandsBase
 {
     public abstract class AsyncCommandBase : ICommand
     {
         private readonly Action<Exception> _onException;
 
         private bool _isExecuting = false;
-        private Func<object,bool> _canExecute;
+        private Func<object, bool> _canExecute;
 
         public event EventHandler CanExecuteChanged
         {
@@ -17,7 +17,7 @@ namespace WPF_Server.Commands
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public AsyncCommandBase(Func<object,bool> canExecute, Action<Exception> onException)
+        public AsyncCommandBase(Func<object, bool> canExecute, Action<Exception> onException)
         {
             _canExecute = canExecute;
             _onException = onException;

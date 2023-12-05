@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Common.CommandsBase;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Windows.Input;
 using WCF_Shared_Library;
-using WPF_Client.Commands;
 using WPF_Client.Enums;
 
 namespace WPF_Client.ViewModels

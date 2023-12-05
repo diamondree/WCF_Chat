@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace WPF_Server.Commands
+namespace Common.CommandsBase
 {
     public class DelegateCommand : ICommand
     {
@@ -17,7 +17,7 @@ namespace WPF_Server.Commands
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
-            remove {  CommandManager.RequerySuggested -= value;}
+            remove { CommandManager.RequerySuggested -= value; }
         }
 
         public bool CanExecute(object parameter)
